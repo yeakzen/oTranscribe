@@ -6,7 +6,7 @@ const $ = require('jquery');
 const Mousetrap = require('mousetrap');
 const Progressor = require('progressor');
 import { getPlayer } from './player/player';
-import { insertTimestamp } from './timestamps';
+import { insertTimestamp, insertTimestampPreviousSecond } from './timestamps';
 import timeSelectionModal from './time-selection-modal';
 import { getSettings } from './settings/settings.jsx';
 
@@ -136,6 +136,7 @@ export function keyboardShortcutSetup() {
     addKeyboardShortcut( shortcuts.italic,    () => document.execCommand('italic',false,null)     );
     addKeyboardShortcut( shortcuts.underline, () => document.execCommand('underline',false,null)  );
     addKeyboardShortcut( shortcuts.addTimestamp, () => insertTimestamp()                             );
+    addKeyboardShortcut( shortcuts.addTimestampPreviousSecond, () => insertTimestampPreviousSecond() );
     addKeyboardShortcut( shortcuts.returnToStart, () => {
         const player = getPlayer();
         player.skipTo( 0 );

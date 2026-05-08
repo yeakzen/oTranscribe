@@ -9,6 +9,12 @@ export function getSettings() {
     let settings = Object.assign({}, defaultSettings);
     if (savedSettings) {
         settings = Object.assign({}, defaultSettings, savedSettings);
+        settings.keyboardShortcuts = Object.assign({}, defaultSettings.keyboardShortcuts, savedSettings.keyboardShortcuts);
+        settings.keyboardShortcuts.shortcuts = Object.assign(
+            {},
+            defaultSettings.keyboardShortcuts.shortcuts,
+            savedSettings.keyboardShortcuts && savedSettings.keyboardShortcuts.shortcuts
+        );
     }
     return settings;
 }

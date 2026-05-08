@@ -11,7 +11,7 @@ import oldBrowserCheck from './old-browsers';
 import languageSetup from './languages';
 import { createPlayer, playerDrivers, getPlayer, isVideoFormat } from './player/player';
 import { bindPlayerToUI, keyboardShortcutSetup } from './ui';
-import { activateTimestamps, insertTimestamp, convertTimestampToSeconds } from './timestamps';
+import { activateTimestamps, insertTimestamp, insertTimestampPreviousSecond, convertTimestampToSeconds } from './timestamps';
 import { initBackup } from './backup';
 import { exportSetup } from './export';
 import importSetup from './import';
@@ -29,6 +29,7 @@ export default function init(){
     // this is necessary due to execCommand restrictions
     // see: http://stackoverflow.com/a/33321235
     window.insertTimestamp = insertTimestamp;
+    window.insertTimestampPreviousSecond = insertTimestampPreviousSecond;
     
     keyboardShortcutSetup();
 
@@ -135,5 +136,4 @@ $(window).resize(function() {
         document.getElementById('media').style.width = oT.media.videoWidth();
     }
 });
-
 

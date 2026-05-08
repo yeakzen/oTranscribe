@@ -1,11 +1,11 @@
 import {getPlayer} from './player/player';
 
-function getTime(){
+function getTime(offset = 0){
     // get timestamp
     const player = getPlayer();
     let time = 0;
     if (player) {
-        time = player.getTime();
+        time = Math.max(0, player.getTime() + offset);
     }
 
     return {
@@ -45,6 +45,16 @@ function insertHTML(newElement) {
 
 function insertTimestamp(){
     var time = getTime();
+    if (time) {
+        const space = document.createTextNode("\u00A0");
+        insertHTML(createTimestampEl(time));
+        insertHTML(space);
+        activateTimestamps();
+    }
+}
+
+function insertTimestampPreviousSecond(){
+    var time = getTime(-1);
     if (time) {
         const space = document.createTextNode("\u00A0");
         insertHTML(createTimestampEl(time));
@@ -105,4 +115,4 @@ function convertTimestampToSeconds(hms) {
     return (+a[0]) * 60 + (+a[1]);
 }
 
-export {activateTimestamps, insertTimestamp, convertTimestampToSeconds, formatMilliseconds};
+export {activateTimestamps, insertTimestamp, insertTimestampPreviousSecond, convertTimestampToSeconds, formatMilliseconds};
