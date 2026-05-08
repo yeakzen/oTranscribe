@@ -1,23 +1,7 @@
 import { h, render, Component } from 'preact';
 import KeyboardShortcuts from './KeyboardShortcuts.jsx';
-import { bindPlayerToUI, keyboardShortcutSetup } from '../ui';
-const localStorageManager = require('local-storage-manager');
-import defaultSettings from './defaults.json';
-
-export function getSettings() {
-    const savedSettings = localStorageManager.getItem('oTranscribe-settings');
-    let settings = Object.assign({}, defaultSettings);
-    if (savedSettings) {
-        settings = Object.assign({}, defaultSettings, savedSettings);
-        settings.keyboardShortcuts = Object.assign({}, defaultSettings.keyboardShortcuts, savedSettings.keyboardShortcuts);
-        settings.keyboardShortcuts.shortcuts = Object.assign(
-            {},
-            defaultSettings.keyboardShortcuts.shortcuts,
-            savedSettings.keyboardShortcuts && savedSettings.keyboardShortcuts.shortcuts
-        );
-    }
-    return settings;
-}
+import { bindPlayerToUI, keyboardShortcutSetup, syncTimestampOffsetUI } from '../ui';
+import { getSettings, defaultSettings, localStorageManager } from './store';
 
 const refreshApp = {};
 refreshApp.keyboardShortcuts = (state, prevState) => {
@@ -27,6 +11,40 @@ refreshApp.keyboardShortcuts = (state, prevState) => {
     const shortcuts = state.keyboardShortcuts.shortcuts;
     const prevShortcuts = prevState.keyboardShortcuts.shortcuts;
 }
+refreshApp.timestampOffsets = () => {
+    bindPlayerToUI();
+    syncTimestampOffsetUI();
+}
+
+function TimestampOffsetSettings(props) {
+    const update = function(ev) {
+        const seconds = parseFloat(ev.target.value);
+        props.onChange({
+            previousTimestamp: isNaN(seconds) ? defaultSettings.timestampOffsets.previousTimestamp : Math.max(0, seconds)
+        });
+    };
+
+    return (
+        <div className="timestamp-offset-settings">
+            <h3>{document.webL10n.get('timestamp-offsets')}</h3>
+            <label className="timestamp-offset-field">
+                <span>{document.webL10n.get('addTimestampPreviousSecond')}</span>
+                <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={props.settings.previousTimestamp}
+                    onInput={update}
+                    onChange={update}
+                />
+                <span>{document.webL10n.get('seconds')}</span>
+            </label>
+            <div className="reset-button" onClick={props.reset}>
+                {document.webL10n.get('restore-timestamp-offsets')}
+            </div>
+        </div>
+    );
+}
 
 class Settings extends Component {
     constructor(props) {
@@ -35,7 +53,11 @@ class Settings extends Component {
     }
     componentDidUpdate(prevProps, prevState) {
         localStorageManager.setItem('oTranscribe-settings', this.state);
-        refreshApp.keyboardShortcuts(this.state, prevState);
+        Object.keys(refreshApp).forEach(key => {
+            if (this.state[key] !== prevState[key]) {
+                refreshApp[key](this.state, prevState);
+            }
+        });
     }
     render() {
         const update = function(key, value) {
@@ -56,11 +78,16 @@ class Settings extends Component {
                     reset={reset.bind(this, 'keyboardShortcuts')}
                     onChange={update.bind(this, 'keyboardShortcuts')}
                 />
+                <TimestampOffsetSettings
+                    settings={this.state.timestampOffsets}
+                    reset={reset.bind(this, 'timestampOffsets')}
+                    onChange={update.bind(this, 'timestampOffsets')}
+                />
             </div>
         );
     }
 }
-
+export { getSettings };
 export function showSettings(el) {
     render(<Settings />, el);    
 }

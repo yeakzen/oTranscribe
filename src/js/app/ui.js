@@ -8,7 +8,7 @@ const Progressor = require('progressor');
 import { getPlayer } from './player/player';
 import { insertTimestamp, insertTimestampPreviousSecond } from './timestamps';
 import timeSelectionModal from './time-selection-modal';
-import { getSettings } from './settings/settings.jsx';
+import { getSettings } from './settings/store';
 
 export function bindPlayerToUI(filename = '') {
     
@@ -164,10 +164,22 @@ export const getFormattedShortcutFor = (shortcut, shortcuts) => {
     return '';
 }
 
+function formatPreviousTimestampOffsetLabel(offset) {
+    const roundedOffset = Math.round(offset * 10) / 10;
+    return `-${roundedOffset}s`;
+}
+
+export function syncTimestampOffsetUI() {
+    const timestampOffsets = getSettings().timestampOffsets;
+    const offset = timestampOffsets.previousTimestamp || 0;
+    $('.previous-second-offset').text(formatPreviousTimestampOffsetLabel(offset));
+}
+
 function setKeyboardShortcutsinUI() {
     const shortcuts = getSettings().keyboardShortcuts.shortcuts;
     $('[data-shortcut]').each(function() {
         const shortcut = $(this).attr('data-shortcut');
         $(this).text(getFormattedShortcutFor(shortcut, shortcuts));
     });
+    syncTimestampOffsetUI();
 }

@@ -90,6 +90,10 @@
             opacity: 0;
             @include transition;
         }
+
+        .shortcut-label {
+            opacity: 0.5;
+        }
     }
 
     .wordcount {

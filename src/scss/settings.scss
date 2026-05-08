@@ -95,3 +95,23 @@
         }        
     }
 }
+
+.timestamp-offset-settings {
+    margin-top: 30px;
+    padding: 0 1em;
+
+    .timestamp-offset-field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        line-height: 3em;
+        background: white;
+        padding: 0 1em;
+    }
+
+    input {
+        width: 80px;
+        font-size: 14px;
+        padding: 4px 6px;
+    }
+}

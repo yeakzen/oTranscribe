@@ -1,4 +1,5 @@
 import {getPlayer} from './player/player';
+import { getSettings } from './settings/store';
 
 function getTime(offset = 0){
     // get timestamp
@@ -54,7 +55,8 @@ function insertTimestamp(){
 }
 
 function insertTimestampPreviousSecond(){
-    var time = getTime(-1);
+    const previousTimestampOffset = getSettings().timestampOffsets.previousTimestamp || 0;
+    var time = getTime(-previousTimestampOffset);
     if (time) {
         const space = document.createTextNode("\u00A0");
         insertHTML(createTimestampEl(time));
