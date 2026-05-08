@@ -45,6 +45,11 @@
         &:active {
             background: color.adjust($accent, $lightness: 40%);
         };
+
+        &.timestamp-highlighted {
+            background: #fff3a0;
+            box-shadow: 0 0 0 2px #f2d23b inset;
+        }
     }
 }
 
@@ -56,4 +61,3 @@
     top: 36px;
     width: 100%;
 }
-

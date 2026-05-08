@@ -48,6 +48,15 @@
             }
         }
 
+        &.highlight-timestamps {
+            display: none;
+            height: 0;
+            &.active {
+                display: block;
+                height: auto;
+            }
+        }
+
         &.previous-second .label {
             opacity: 0.7;
         }

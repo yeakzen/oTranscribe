@@ -101,6 +101,7 @@ function show(){
     $('.topbar').addClass('inputting');
     $('.input').addClass('active');
     $('.sbutton.time').removeClass('active');
+    $('.sbutton.highlight-timestamps').removeClass('active');
     $('.text-panel').removeClass('editing');
     
 }
@@ -124,6 +125,7 @@ export function hide(){
     $('.topbar').removeClass('inputting');
     $('.input').removeClass('active');
     $('.sbutton.time').addClass('active');
+    $('.sbutton.highlight-timestamps').addClass('active');
     $('.text-panel').addClass('editing');
     $('.ext-input-field').hide();
     $('.file-input-outer').removeClass('ext-input-active');

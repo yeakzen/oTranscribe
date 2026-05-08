@@ -90,6 +90,7 @@ function activateTimestamps(){
 function onClick() {
     const player = getPlayer();
     var time = this.dataset.timestamp;
+    this.classList.remove('timestamp-highlighted');
     if (player) {
         if (typeof time === 'string' && time.indexOf(':') > -1) {
             // backwards compatibility, as old timestamps have string rather than number
@@ -98,6 +99,18 @@ function onClick() {
             player.setTime( time );
         }
     }    
+}
+
+function highlightTimestamps() {
+    Array.from(document.querySelectorAll('.timestamp')).forEach(el => {
+        el.classList.add('timestamp-highlighted');
+    });
+}
+
+function clearHighlightedTimestamps() {
+    Array.from(document.querySelectorAll('.timestamp')).forEach(el => {
+        el.classList.remove('timestamp-highlighted');
+    });
 }
 
 // backwards compatibility, as old timestamps use setFromTimestamp() and ts.setFrom()
@@ -122,4 +135,4 @@ function convertTimestampToSeconds(hms) {
     return (+a[0]) * 60 + (+a[1]);
 }
 
-export {activateTimestamps, insertTimestamp, insertTimestampPreviousSecond, convertTimestampToSeconds, formatMilliseconds};
+export {activateTimestamps, insertTimestamp, insertTimestampPreviousSecond, highlightTimestamps, clearHighlightedTimestamps, convertTimestampToSeconds, formatMilliseconds};
