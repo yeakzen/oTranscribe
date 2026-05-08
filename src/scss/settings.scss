@@ -109,9 +109,23 @@
         padding: 0 1em;
     }
 
+    .timestamp-offset-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        padding: 12px 1em;
+        margin-top: 1px;
+    }
+
     input {
         width: 80px;
         font-size: 14px;
         padding: 4px 6px;
+    }
+
+    .timestamp-offset-checkbox input {
+        width: auto;
+        padding: 0;
     }
 }

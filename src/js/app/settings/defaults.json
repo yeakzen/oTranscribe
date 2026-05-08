@@ -16,6 +16,7 @@
         }
     },
     "timestampOffsets": {
-        "previousTimestamp": 1.5
+        "previousTimestamp": 1.5,
+        "addLineBreakAfterPreviousTimestamp": false
     }
 }

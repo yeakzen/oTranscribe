@@ -55,12 +55,17 @@ function insertTimestamp(){
 }
 
 function insertTimestampPreviousSecond(){
-    const previousTimestampOffset = getSettings().timestampOffsets.previousTimestamp || 0;
+    const timestampOffsetSettings = getSettings().timestampOffsets;
+    const previousTimestampOffset = timestampOffsetSettings.previousTimestamp || 0;
     var time = getTime(-previousTimestampOffset);
     if (time) {
-        const space = document.createTextNode("\u00A0");
         insertHTML(createTimestampEl(time));
-        insertHTML(space);
+        if (timestampOffsetSettings.addLineBreakAfterPreviousTimestamp) {
+            insertHTML(document.createTextNode("\u00A0"));
+            insertHTML(document.createElement('br'));
+        } else {
+            insertHTML(document.createTextNode("\u00A0"));
+        }
         activateTimestamps();
     }
 }

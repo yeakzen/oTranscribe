@@ -17,11 +17,17 @@ refreshApp.timestampOffsets = () => {
 }
 
 function TimestampOffsetSettings(props) {
-    const update = function(ev) {
+    const updateOffset = function(ev) {
         const seconds = parseFloat(ev.target.value);
-        props.onChange({
+        props.onChange(Object.assign({}, props.settings, {
             previousTimestamp: isNaN(seconds) ? defaultSettings.timestampOffsets.previousTimestamp : Math.max(0, seconds)
-        });
+        }));
+    };
+
+    const updateLineBreak = function(ev) {
+        props.onChange(Object.assign({}, props.settings, {
+            addLineBreakAfterPreviousTimestamp: ev.target.checked
+        }));
     };
 
     return (
@@ -34,10 +40,18 @@ function TimestampOffsetSettings(props) {
                     min="0"
                     step="0.1"
                     value={props.settings.previousTimestamp}
-                    onInput={update}
-                    onChange={update}
+                    onInput={updateOffset}
+                    onChange={updateOffset}
                 />
                 <span>{document.webL10n.get('seconds')}</span>
+            </label>
+            <label className="timestamp-offset-checkbox">
+                <input
+                    type="checkbox"
+                    checked={props.settings.addLineBreakAfterPreviousTimestamp}
+                    onChange={updateLineBreak}
+                />
+                <span>{document.webL10n.get('add-line-break-after-previous-timestamp')}</span>
             </label>
             <div className="reset-button" onClick={props.reset}>
                 {document.webL10n.get('restore-timestamp-offsets')}
