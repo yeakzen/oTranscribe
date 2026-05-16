@@ -13,6 +13,7 @@ function getSettings() {
             savedSettings.keyboardShortcuts && savedSettings.keyboardShortcuts.shortcuts
         );
         settings.timestampOffsets = Object.assign({}, defaultSettings.timestampOffsets, savedSettings.timestampOffsets);
+        settings.subtitles = Object.assign({}, defaultSettings.subtitles, savedSettings.subtitles);
     }
     return settings;
 }

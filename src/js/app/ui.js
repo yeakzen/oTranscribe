@@ -9,6 +9,16 @@ import { getPlayer } from './player/player';
 import { insertTimestamp, insertTimestampPreviousSecond } from './timestamps';
 import timeSelectionModal from './time-selection-modal';
 import { getSettings } from './settings/store';
+import {
+    bindSentenceEndPause,
+    bindSubtitleDisplay,
+    jumpToNext,
+    jumpToPrevious,
+    repeatCurrent,
+    syncSubtitleUI,
+    togglePauseAtSentenceEnd,
+    toggleSubtitleVisible
+} from './subtitles';
 
 export function bindPlayerToUI(filename = '') {
     
@@ -24,6 +34,11 @@ export function bindPlayerToUI(filename = '') {
     var skippingButtonInterval;
     addKeyboardShortcut(shortcuts.backwards, player.skip.bind(player, 'backwards'));
     addKeyboardShortcut(shortcuts.forwards, player.skip.bind(player, 'forwards'));
+    addKeyboardShortcut(shortcuts.previousSentence, () => jumpToPrevious(player));
+    addKeyboardShortcut(shortcuts.nextSentence, () => jumpToNext(player));
+    addKeyboardShortcut(shortcuts.repeatSentence, () => repeatCurrent(player));
+    addKeyboardShortcut(shortcuts.toggleSubtitle, toggleSubtitleVisible);
+    addKeyboardShortcut(shortcuts.togglePauseAtSentenceEnd, togglePauseAtSentenceEnd);
     
     $('.skip-backwards').off().mousedown(function(){
         player.skip('backwards');
@@ -41,6 +56,9 @@ export function bindPlayerToUI(filename = '') {
     }).mouseup(function(){
         clearInterval(skippingButtonInterval);
     });
+    $('.previous-sentence').off().click(() => jumpToPrevious(player));
+    $('.next-sentence').off().click(() => jumpToNext(player));
+    $('.repeat-sentence').off().click(() => repeatCurrent(player));
     
     $playPauseButton.off().click(playPause);
     addKeyboardShortcut(shortcuts.playPause, playPause)
@@ -98,6 +116,10 @@ export function bindPlayerToUI(filename = '') {
             $playPauseButton.removeClass('playing');
         }
     });
+
+    bindSubtitleDisplay(player);
+    bindSentenceEndPause(player);
+    syncSubtitleUI();
     
     setKeyboardShortcutsinUI();
     
@@ -116,6 +138,9 @@ export function bindPlayerToUI(filename = '') {
 export function addKeyboardShortcut(key, fn) {
     Mousetrap.unbind(key);
     Mousetrap.bind(key, function(e) {
+        if (isEditableSingleKeyShortcut(key, e)) {
+            return true;
+        }
         if (e.preventDefault) {
             e.preventDefault();
         } else {
@@ -126,6 +151,23 @@ export function addKeyboardShortcut(key, fn) {
         return false;
     });
     
+}
+
+function isEditableSingleKeyShortcut(key, e) {
+    const target = e.target || e.srcElement;
+    const keys = Array.isArray(key) ? key : [key];
+    const isSingleKey = keys.some(k => typeof k === 'string' && k.length === 1);
+    if (!isSingleKey) {
+        return false;
+    }
+    if (e.ctrlKey || e.metaKey || e.altKey) {
+        return false;
+    }
+    if (!target) {
+        return false;
+    }
+    const tagName = target.tagName && target.tagName.toLowerCase();
+    return target.isContentEditable || tagName === 'input' || tagName === 'textarea' || tagName === 'select';
 }
 
 export function keyboardShortcutSetup() {

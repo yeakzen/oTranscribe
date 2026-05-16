@@ -85,10 +85,17 @@ class Player{
     play(){
     	this.skip('backwards');
         this.driver.play();
+        this.notifyPlayPause();
+    }
+
+    playDirect(){
+        this.driver.play();
+        this.notifyPlayPause();
     }
 
     pause(){
     	this.driver.pause();
+        this.notifyPlayPause();
     }
 
     getTime(){
@@ -112,6 +119,7 @@ class Player{
         } else {
             throw ('Skip requires a direction: forwards or backwards')
         }
+        expectedTime = Math.max(0, expectedTime);
         this.setTime(expectedTime);
         
         // compensate for weird video setTime bug
@@ -160,6 +168,12 @@ class Player{
     
     onPlayPause(callback) {
         this.onPlayPauseCallback = callback;
+    }
+
+    notifyPlayPause() {
+        if (this.onPlayPauseCallback) {
+            this.onPlayPauseCallback(this.getStatus());
+        }
     }
     
     getName() {

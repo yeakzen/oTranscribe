@@ -16,6 +16,7 @@ import { initBackup } from './backup';
 import { exportSetup } from './export';
 import importSetup from './import';
 import viewController from './view-controller';
+import { clearSubtitles, setupSubtitleControls } from './subtitles';
 
 export default function init(){
     initBackup();
@@ -24,6 +25,7 @@ export default function init(){
     activateTimestamps();
     exportSetup();
     importSetup();
+    setupSubtitleControls();
     initAutoscroll();
 
     // this is necessary due to execCommand restrictions
@@ -89,6 +91,7 @@ export default function init(){
 function onLocalized() {
     const resetInput = inputSetup({
         create: file => {
+            clearSubtitles();
             const driver = isVideoFormat(file) ? playerDrivers.HTML5_VIDEO : playerDrivers.HTML5_AUDIO;
 		    createPlayer({
 		        driver: driver,
@@ -99,6 +102,7 @@ function onLocalized() {
 		    });
         },
         createFromURL: url => {
+            clearSubtitles();
 		    createPlayer({
 		        driver: playerDrivers.YOUTUBE,
 		        source: url
@@ -122,6 +126,7 @@ function onLocalized() {
     $('.reset').off().on('click', () => {
         const player = getPlayer();
         resetInput();
+        clearSubtitles();
         if (player) {
             player.destroy();
         }

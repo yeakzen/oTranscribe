@@ -8,6 +8,11 @@
             "timeSelection": ["mod+k"],
             "speedDown": ["f3","mod+3"],
             "speedUp": ["f4","mod+4"],
+            "previousSentence": ["a"],
+            "nextSentence": ["d"],
+            "repeatSentence": ["s"],
+            "toggleSubtitle": ["mod+shift+c"],
+            "togglePauseAtSentenceEnd": ["mod+shift+p"],
             "addTimestamp": ["mod+j"],
             "addTimestampPreviousSecond": ["ctrl+space"],
             "bold": ["mod+b"],
@@ -18,5 +23,9 @@
     "timestampOffsets": {
         "previousTimestamp": 1.5,
         "addLineBreakAfterPreviousTimestamp": false
+    },
+    "subtitles": {
+        "showCurrentText": true,
+        "pauseAtSentenceEnd": false
     }
 }

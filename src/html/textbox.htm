@@ -9,6 +9,8 @@
             <div class="close-message-panel"><i class="fa fa-times"></i></div>
             <div class="message-content"></div>
     </div>
+
+    <div class="subtitle-current hidden"></div>
     
     <div id="textbox"  class="mousetrap" contenteditable="true">
         <p data-l10n-id="d-txt1">Enter your transcript here...</p>
@@ -47,6 +49,23 @@
                 <i class="fa fa-sign-in" id="icon-imp"></i><span class="label" data-l10n-id="import-button">Import</span>
             </button>
             <input id="local-file-import" type="file" name="file" accept=".otr"  />
+        </div>
+        <div class="subtitle-tool">
+            <div class="subtitle-file-wrapper">
+                <button class="sbutton subtitles">
+                    <i class="fa fa-cc"></i><span class="label" data-l10n-id="subtitles">Subtitles</span>
+                </button>
+                <input class="subtitle-upload-input" type="file" name="file" accept=".srt,.vtt,text/vtt" />
+            </div>
+            <span class="subtitle-filename" data-l10n-id="no-subtitles">No subtitles loaded</span>
+            <label class="subtitle-toggle">
+                <input class="subtitle-visible-toggle" type="checkbox" disabled />
+                <span data-l10n-id="show-current-subtitle">Show current subtitle</span>
+            </label>
+            <label class="subtitle-toggle">
+                <input class="sentence-end-pause-toggle" type="checkbox" disabled />
+                <span data-l10n-id="pause-at-sentence-end">Pause at sentence end</span>
+            </label>
         </div>
         <button class="sbutton export">
             <i class="fa fa-share-square-o" id="icon-exp"></i><span class="label" data-l10n-id="export">Export</span>

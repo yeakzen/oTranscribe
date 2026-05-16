@@ -12,8 +12,12 @@ export default class YOUTUBE {
         loadScriptTag(() => {
         
             var videoId = parseYoutubeURL(source);
+            if (!videoId) {
+                throw('Invalid YouTube URL');
+            }
             this._ytEl = new YT.Player('oTplayerEl', {
                 width: '100%',
+                height: '100%',
                 videoId: videoId,
                 playerVars: {
                     // controls: 0,
@@ -47,21 +51,8 @@ export default class YOUTUBE {
                 }
     
                 this.duration = this._ytEl.getDuration();
-                
-                setTimeout(() => {
-                    // kickstart youtube
-                    this.play();
-                    setTimeout(() => {
-                        this.pause();
-                        
-                        this._isReady = true;
-                        window._ytEl = this._ytEl;
-
-                        
-                        
-                    },500);
-        
-                },1000);
+                this._isReady = true;
+                window._ytEl = this._ytEl;
 
             
             }
@@ -69,16 +60,16 @@ export default class YOUTUBE {
         
         function loadScriptTag(callback) {
             // import YouTube API
-            if ( window.YT === undefined ) {
+            window.onYouTubeIframeAPIReady = callback;
+            if ( window.YT && window.YT.Player ) {
+                callback();
+            } else if ( !document.getElementById('youtube-script') ) {
                 var tag = document.createElement('script');
                 tag.setAttribute('id','youtube-script');
                 tag.src = "https://www.youtube.com/iframe_api";
                 var firstScriptTag = document.getElementsByTagName('script')[0];
                 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            } else {
-                callback();
             }
-            window.onYouTubeIframeAPIReady = callback;
         }        
         
     }
