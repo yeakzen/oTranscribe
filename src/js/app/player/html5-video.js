@@ -3,7 +3,8 @@ export default class HTML5_VIDEO {
         this.element = document.createElement( 'video' );
         this.element.src = source;
         this.element.className = 'video-player';
-    	document.body.appendChild(this.element);
+        const playerControls = document.querySelector('#player-controls');
+    	(playerControls || document.body).appendChild(this.element);
     }
     play() {
         this.element.play();

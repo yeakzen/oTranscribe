@@ -10,7 +10,10 @@
             <div class="message-content"></div>
     </div>
 
-    <div class="subtitle-current hidden"></div>
+    <div class="media-panel">
+        <div id="player-controls"></div>
+        <div class="subtitle-current hidden"></div>
+    </div>
     
     <div id="textbox"  class="mousetrap" contenteditable="true">
         <p data-l10n-id="d-txt1">Enter your transcript here...</p>
@@ -65,6 +68,10 @@
             <label class="subtitle-toggle">
                 <input class="sentence-end-pause-toggle" type="checkbox" disabled />
                 <span data-l10n-id="pause-at-sentence-end">Pause at sentence end</span>
+            </label>
+            <label class="subtitle-size-control">
+                <span data-l10n-id="subtitle-size">Subtitle size</span>
+                <input class="subtitle-size-slider" type="range" min="12" max="28" step="1" value="15" />
             </label>
         </div>
         <button class="sbutton export">

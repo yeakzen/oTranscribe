@@ -9,6 +9,7 @@ const state = {
     currentIndex: -1,
     showCurrentText: true,
     pauseAtSentenceEnd: false,
+    fontSize: 15,
     repeatActive: false,
     repeatCueIndex: -1,
     repeatTimer: null,
@@ -183,6 +184,8 @@ export function initSubtitleSettings() {
     const subtitles = getSettings().subtitles || {};
     state.showCurrentText = subtitles.showCurrentText !== false;
     state.pauseAtSentenceEnd = subtitles.pauseAtSentenceEnd === true;
+    state.fontSize = subtitles.fontSize || 15;
+    applySubtitleSize();
     syncSubtitleUI();
 }
 
@@ -334,6 +337,18 @@ export function togglePauseAtSentenceEnd() {
     setPauseAtSentenceEnd(!state.pauseAtSentenceEnd);
 }
 
+export function setSubtitleFontSize(size) {
+    const parsedSize = parseInt(size, 10);
+    state.fontSize = isNaN(parsedSize) ? 15 : Math.min(28, Math.max(12, parsedSize));
+    saveSubtitleSetting('fontSize', state.fontSize);
+    applySubtitleSize();
+    syncSubtitleUI();
+}
+
+function applySubtitleSize() {
+    $('.subtitle-current').css('font-size', `${state.fontSize}px`);
+}
+
 function updateSubtitleDisplay(player) {
     const $display = $('.subtitle-current');
     if (!$display.length) {
@@ -416,6 +431,9 @@ export function setupSubtitleControls() {
     $('.sentence-end-pause-toggle').off().on('change', function() {
         setPauseAtSentenceEnd(this.checked);
     });
+    $('.subtitle-size-slider').off().on('input change', function() {
+        setSubtitleFontSize(this.value);
+    });
     syncSubtitleUI();
 }
 
@@ -424,5 +442,6 @@ export function syncSubtitleUI() {
     $('.subtitle-filename').text(state.filename || getText('no-subtitles', 'No subtitles loaded'));
     $('.subtitle-visible-toggle').prop('checked', state.showCurrentText).prop('disabled', !hasSubtitles());
     $('.sentence-end-pause-toggle').prop('checked', state.pauseAtSentenceEnd).prop('disabled', !hasSubtitles());
+    $('.subtitle-size-slider').val(state.fontSize);
     $('.sentence-control').toggleClass('disabled', !hasSubtitles());
 }

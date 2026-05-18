@@ -87,6 +87,16 @@
     background: $dark;
 }
 
+#player-controls .video-player {
+    position: static;
+    top: auto;
+    left: auto;
+    width: 100%;
+    min-width: 0;
+    display: block;
+    box-sizing: border-box;
+}
+
 .progressor {
     display: inline-block;
     width: 100%;

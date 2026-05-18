@@ -63,11 +63,22 @@
     color: $dark;
     box-shadow: 0 1px 6px #CCC;
     font-size: 15px;
-    line-height: 20px;
+    line-height: 1.35;
+    overflow-wrap: break-word;
     
     &.hidden {
         display: none;
     }
+}
+
+.media-panel {
+    position: fixed;
+    z-index: 40;
+    box-sizing: border-box;
+}
+
+#player-controls {
+    display: none;
 }
 
 .textbox-container {
@@ -77,6 +88,71 @@
     background: #eee;
     top: 36px;
     width: 100%;
+}
+
+.textbox-container.media-audio {
+    .media-panel {
+        top: 86px;
+        left: 0;
+        right: calc(50% + 370px);
+        width: auto;
+    }
+
+    .subtitle-current {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+.textbox-container.media-video {
+    #textbox {
+        width: 520px;
+        padding: 40px;
+        margin: 20px 230px 50px auto;
+    }
+
+    .text-panel {
+        top: 56px;
+        left: auto;
+        right: 20px;
+        padding-top: 0;
+    }
+
+    .media-panel {
+        top: 55px;
+        left: 20px;
+        width: calc(100% - 890px);
+        min-width: 300px;
+    }
+
+    #player-controls {
+        display: block;
+    }
+
+    .subtitle-current {
+        width: 100%;
+        margin: 14px 0 0 0;
+    }
+}
+
+@media (max-width: 1120px) {
+    .textbox-container.media-video {
+        #textbox {
+            width: 440px;
+            padding: 35px;
+            margin-right: 205px;
+        }
+
+        .text-panel {
+            width: 175px;
+            padding-left: 15px;
+        }
+
+        .media-panel {
+            width: calc(100% - 760px);
+            min-width: 240px;
+        }
+    }
 }
 
 .subtitle-tool {
@@ -118,6 +194,23 @@
         input {
             vertical-align: middle;
             margin-right: 3px;
+        }
+    }
+
+    .subtitle-size-control {
+        display: block;
+        margin-top: 6px;
+        white-space: nowrap;
+
+        span {
+            display: inline-block;
+            min-width: 74px;
+            vertical-align: middle;
+        }
+
+        input {
+            width: 110px;
+            vertical-align: middle;
         }
     }
     

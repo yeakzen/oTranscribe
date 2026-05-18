@@ -26,6 +26,7 @@
     },
     "subtitles": {
         "showCurrentText": true,
-        "pauseAtSentenceEnd": false
+        "pauseAtSentenceEnd": false,
+        "fontSize": 15
     }
 }

@@ -45,6 +45,7 @@ export default function init(){
     // If the ?v=<VIDEO_ID> parameter is found in the URL, auto load YouTube video
     if ( otrQueryParams['v'] ){
         $('.start').removeClass('ready');
+        setMediaLayout('video');
         createPlayer({
             driver: playerDrivers.YOUTUBE,
             source: "https://www.youtube.com/watch?v=" + otrQueryParams.v
@@ -87,12 +88,19 @@ export default function init(){
 
 }
 
+function setMediaLayout(type) {
+    $('.textbox-container')
+        .removeClass('media-audio media-video')
+        .addClass(type ? `media-${type}` : '');
+}
+
 // note: this function may run multiple times
 function onLocalized() {
     const resetInput = inputSetup({
         create: file => {
             clearSubtitles();
             const driver = isVideoFormat(file) ? playerDrivers.HTML5_VIDEO : playerDrivers.HTML5_AUDIO;
+            setMediaLayout(isVideoFormat(file) ? 'video' : 'audio');
 		    createPlayer({
 		        driver: driver,
 		        source: window.URL.createObjectURL(file),
@@ -103,6 +111,7 @@ function onLocalized() {
         },
         createFromURL: url => {
             clearSubtitles();
+            setMediaLayout('video');
 		    createPlayer({
 		        driver: playerDrivers.YOUTUBE,
 		        source: url
@@ -127,6 +136,7 @@ function onLocalized() {
         const player = getPlayer();
         resetInput();
         clearSubtitles();
+        setMediaLayout(null);
         if (player) {
             player.destroy();
         }

@@ -6,7 +6,8 @@ export default class YOUTUBE {
         this.element = document.createElement('div');
         this.element.setAttribute('id','oTplayerEl');
         this.element.className = 'video-player';
-        document.body.appendChild(this.element); 
+        const playerControls = document.querySelector('#player-controls');
+        (playerControls || document.body).appendChild(this.element); 
         
         
         loadScriptTag(() => {
