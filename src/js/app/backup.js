@@ -3,6 +3,12 @@ const localStorageManager = require('local-storage-manager');
 import showMessage from './message-panel';
 import {setEditorContents} from './texteditor';
 import { addKeyboardShortcut } from './ui';
+import {
+    getCurrentDocumentId,
+    getDocumentBackupPrefix,
+    saveCurrentDocument,
+    getCurrentDocumentContents
+} from './documents';
 
 function getTexteditorContents() {
     return document.querySelector('#textbox').innerHTML;
@@ -14,7 +20,6 @@ function init(){
         showMessage( backupClearMessage );
     }
     localStorageManager.onSaveFailure = warnAboutBackupFailure;
-    migrateToLocalStorageManager();
     autosaveInit();
     setInterval(function(){
         saveBackup();
@@ -35,16 +40,9 @@ function init(){
 // original autosave function
 function autosaveInit(){
     var field = document.querySelector("#textbox");
-    
-    // load existing autosave (if present)
-    try {
-        const autosaveContents = localStorageManager.getItem("autosave");
-        if (autosaveContents) {        
-           setEditorContents( localStorageManager.getItem("autosave") );
-        }
-    } catch (e) {
-        // don't load autosave, as it's corrupted
-    }
+
+    setEditorContents(getCurrentDocumentContents());
+
     // autosave every second - but wait five seconds before kicking in
     setTimeout(function(){
         // prevent l10n from replacing user text
@@ -55,30 +53,11 @@ function autosaveInit(){
             el.removeAttribute('data-l10n-id');
         });
         setInterval(function(){
-           localStorageManager.setItem("autosave", getTexteditorContents());
+           saveCurrentDocument(getTexteditorContents());
         }, 1000);
     }, 5000);
 }
 
-
-function migrateToLocalStorageManager(){
-    // May 2015 - migration to localStorageManager
-    if ( localStorage.getItem("autosave")) {        
-       localStorageManager.setItem("autosave", localStorage.getItem("autosave") );
-    }
-    var backupList = [];
-    for (var i = 0; i < localStorage.length; i++) {
-        var key = localStorage.key(i);
-        if (key.indexOf('oTranscribe-backup') === 0) {
-            var item = {
-                value: localStorage.getItem( key ),
-                timestamp: key.split('-')[2]
-            };
-            localStorage.setItem( 'localStorageManager_'+key, JSON.stringify(item) );
-            localStorage.removeItem( key );
-        }
-    }
-}
 
 let notYetWarned = true;
 function warnAboutBackupFailure(){
@@ -140,7 +119,7 @@ function generateBlock(ref){
     // create icon and 'restore' button
     var obj = localStorageManager.getItemMetadata(ref);
     var text = obj.value;
-    var timestamp = obj.timestamp;
+    var timestamp = ref.split('-').pop();
     var date = formatDate(timestamp);
     
     var block = document.createElement('div');
@@ -206,6 +185,7 @@ function addDocsToPanel(start,end){
 function listFiles(){
     var result = [];
     var ls = [];
+    var backupPrefix = getDocumentBackupPrefix(getCurrentDocumentId());
     try {
         ls = localStorageManager.getArray();
     } catch (e) {
@@ -215,7 +195,7 @@ function listFiles(){
         throw(e);
     }
     for (var i = 0; i < ls.length; i++) {
-        if (ls[i].key.indexOf('oTranscribe-backup') > -1) {
+        if (ls[i].key.indexOf(backupPrefix) === 0) {
             result.push( ls[i].key );
         }
     }
@@ -227,23 +207,27 @@ function listFiles(){
 function saveBackup(){
     // save current text to timestamped localStorageManager item
     var text = getTexteditorContents();
+    saveCurrentDocument(text);
     var timestamp = new Date().getTime();
-    localStorageManager.setItem('oTranscribe-backup-'+timestamp, text);
+    var backupKey = getDocumentBackupPrefix(getCurrentDocumentId()) + timestamp;
+    localStorageManager.setItem(backupKey, text);
     // and bleep icon
     $('.sbutton.backup').addClass('flash');
     setTimeout(function(){
         $('.sbutton.backup').removeClass('flash');
     },1000);
     // and add to tray
-    var newBlock = generateBlock('oTranscribe-backup-'+timestamp);
-    newBlock.className += ' new-block';
-    $('.backup-window').prepend( newBlock );
-    $( newBlock ).animate({
-        'opacity': 1,
-        'width': '25%'
-    },'slow',function(){
-        $( newBlock ).find('.backup-restore-button').fadeIn();
-    });
+    if ($('.backup-panel').is(':visible')) {
+        var newBlock = generateBlock(backupKey);
+        newBlock.className += ' new-block';
+        $('.backup-window').prepend( newBlock );
+        $( newBlock ).animate({
+            'opacity': 1,
+            'width': '25%'
+        },'slow',function(){
+            $( newBlock ).find('.backup-restore-button').fadeIn();
+        });
+    }
     trimBackupsToOneHundred();
 }
 
@@ -253,10 +237,11 @@ function restoreBackup(timestamp){
     saveBackup();
     const restoreErrorMessage = document.webL10n.get('restore-error');
     try {
-        var item = localStorageManager.getItem('oTranscribe-backup-'+timestamp);
+        var item = localStorageManager.getItem(getDocumentBackupPrefix(getCurrentDocumentId()) + timestamp);
         if ( item ) {
             var newText = item;
             setEditorContents(newText, {transition: true});
+            saveCurrentDocument(newText);
         } else {
             showMessage( restoreErrorMessage );
         }
@@ -266,4 +251,4 @@ function restoreBackup(timestamp){
     closePanel();
 }
 
-export { init as initBackup };
+export { init as initBackup, saveBackup as save, listFiles as list };

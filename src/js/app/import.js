@@ -1,15 +1,19 @@
 import showMessage from './message-panel';
 const $ = require('jquery');
-import {setEditorContents} from './texteditor';
+import { createDocument, switchDocument } from './documents';
 
 export default function() {
     $('#local-file-import').change(reactToInput);
 }
 
-function loadFile( fileRaw ){
+function loadFile( fileRaw, filename ){
     try {
         const file = JSON.parse(fileRaw); 
-        setEditorContents(file.text);
+        const doc = createDocument({
+            title: filename || file.name || 'Imported transcript',
+            content: file.text || ''
+        });
+        switchDocument(doc.id, { transition: true });
         remindOfMediaFile(file.media, file['media-source'], file['media-time']);
     } catch (e) {
         console.warn(e);
@@ -43,7 +47,7 @@ function reactToInput(){
     reader.readAsText(file);
     reader.onload = function(e) { 
         var contents = e.target.result;
-        loadFile( contents );
+        loadFile( contents, file.name.replace(/\.otr$/i, '') );
     }
     
     input.value = '';

@@ -44,6 +44,9 @@
         <div class="wordcount">
             <span class="wc-text">words</span>        
         </div>
+        <button class="sbutton documents">
+            <i class="fa fa-files-o"></i><span class="label">docs</span>
+        </button>
         <button class="sbutton backup">
             <i class="fa fa-history"></i><span class="label" data-l10n-id="history-button">history</span>
         </button>
@@ -53,6 +56,10 @@
             </button>
             <input id="local-file-import" type="file" name="file" accept=".otr"  />
         </div>
+        <button class="sbutton export">
+            <i class="fa fa-share-square-o" id="icon-exp"></i><span class="label" data-l10n-id="export">Export</span>
+            
+        </button>
         <div class="subtitle-tool">
             <div class="subtitle-file-wrapper">
                 <button class="sbutton subtitles">
@@ -74,10 +81,6 @@
                 <input class="subtitle-size-slider" type="range" min="12" max="28" step="1" value="15" />
             </label>
         </div>
-        <button class="sbutton export">
-            <i class="fa fa-share-square-o" id="icon-exp"></i><span class="label" data-l10n-id="export">Export</span>
-            
-        </button>
                 
                 
         
@@ -92,6 +95,20 @@
             Google Drive
             <div class="sign-in" data-l10n-id="sign-in" id="x-gd-sign">Sign in</div>
         </a>
+    </div>
+
+    <div class="documents-panel">
+        <div class="document-panel-header">
+            <div class="document-current">
+                <span class="document-current-label">Current document</span>
+                <span class="document-current-title">Untitled transcript</span>
+            </div>
+            <button type="button" class="document-close"><i class="fa fa-times"></i></button>
+        </div>
+        <button type="button" class="document-new">
+            <i class="fa fa-plus"></i><span>New document</span>
+        </button>
+        <div class="document-list"></div>
     </div>
     
     <div class="backup-panel">

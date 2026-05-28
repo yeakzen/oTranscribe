@@ -13,12 +13,16 @@ import { createPlayer, playerDrivers, getPlayer, isVideoFormat } from './player/
 import { bindPlayerToUI, keyboardShortcutSetup } from './ui';
 import { activateTimestamps, insertTimestamp, insertTimestampPreviousSecond, highlightTimestamps, clearHighlightedTimestamps, convertTimestampToSeconds } from './timestamps';
 import { initBackup } from './backup';
+import { initDocuments, saveCurrentDocument } from './documents';
 import { exportSetup } from './export';
 import importSetup from './import';
 import viewController from './view-controller';
 import { clearSubtitles, setupSubtitleControls } from './subtitles';
 
 export default function init(){
+    initDocuments({
+        beforeSwitch: () => saveCurrentDocument()
+    });
     initBackup();
     watchFormatting();
     languageSetup();
