@@ -9,9 +9,10 @@ import {
     saveCurrentDocument,
     getCurrentDocumentContents
 } from './documents';
+import { serializeMarkdownBlocks } from './markdown-blocks';
 
 function getTexteditorContents() {
-    return document.querySelector('#textbox').innerHTML;
+    return serializeMarkdownBlocks(document.querySelector('#textbox'));
 }
 
 function init(){

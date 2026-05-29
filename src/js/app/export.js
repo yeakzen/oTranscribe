@@ -8,9 +8,10 @@ import googleDriveSetup from './export-formats/google-drive';
 import { getPlayer } from './player/player';
 const sanitizeHtml = require('sanitize-html');
 import { cleanHTML } from './clean-html';
+import { serializeMarkdownBlocks } from './markdown-blocks';
 
 function getTexteditorContents() {
-    return document.querySelector('#textbox').innerHTML;
+    return serializeMarkdownBlocks(document.querySelector('#textbox'));
 }
 
 function getFilename() {

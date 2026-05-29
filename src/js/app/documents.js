@@ -2,6 +2,7 @@ const $ = require('jquery');
 const localStorageManager = require('local-storage-manager');
 import { setEditorContents } from './texteditor';
 import showMessage from './message-panel';
+import { serializeMarkdownBlocks } from './markdown-blocks';
 
 const INDEX_KEY = 'oTranscribe-documents-index';
 const CURRENT_KEY = 'oTranscribe-current-document';
@@ -23,7 +24,7 @@ function createId() {
 
 function getTexteditorContents() {
     const textbox = document.querySelector('#textbox');
-    return textbox ? textbox.innerHTML : '';
+    return textbox ? serializeMarkdownBlocks(textbox) : '';
 }
 
 function getDocumentContentKey(id) {

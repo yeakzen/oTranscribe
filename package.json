@@ -38,6 +38,7 @@
     "jquery": "^3.5.0",
     "keycode": "^2.1.8",
     "local-storage-manager": "git+https://github.com/ejb/localStorageManager.git",
+    "marked": "^18.0.4",
     "mousetrap": "^1.6.0",
     "mustache": "^2.2.1",
     "preact": "^8.1.0",

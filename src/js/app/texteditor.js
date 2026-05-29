@@ -1,5 +1,6 @@
 import { cleanHTML } from './clean-html';
 import { activateTimestamps } from './timestamps';
+import { getTextWithMarkdownBlocks, hydrateMarkdownBlocks } from './markdown-blocks';
 const $ = require('jquery');
 
 function countWords(str){
@@ -12,7 +13,7 @@ function countWords(str){
 
 function countTextbox(){
     var textboxElement = document.getElementById('textbox');
-    var textboxText = textboxElement.innerText || textboxElement.textContent;
+    var textboxText = getTextWithMarkdownBlocks(textboxElement);
     var count = countWords(textboxText);
       
     var wordcountText = document.webL10n.get('wordcount', {n: count});
@@ -71,6 +72,7 @@ function setEditorContents( dirtyText, opts = {} ) {
             $textbox[0].appendChild(newText);    
         }
         activateTimestamps();
+        hydrateMarkdownBlocks($textbox[0]);
         $('.textbox-container').scrollTop(0);
     }
     

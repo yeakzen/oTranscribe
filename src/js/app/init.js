@@ -18,6 +18,7 @@ import { exportSetup } from './export';
 import importSetup from './import';
 import viewController from './view-controller';
 import { clearSubtitles, setupSubtitleControls } from './subtitles';
+import { setupMarkdownBlocks } from './markdown-blocks';
 
 export default function init(){
     initDocuments({
@@ -30,6 +31,7 @@ export default function init(){
     exportSetup();
     importSetup();
     setupSubtitleControls();
+    setupMarkdownBlocks();
     initAutoscroll();
 
     // this is necessary due to execCommand restrictions
