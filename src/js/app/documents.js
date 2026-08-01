@@ -1,5 +1,5 @@
 const $ = require('jquery');
-const localStorageManager = require('local-storage-manager');
+import { localStorageManager } from './indexeddb-store';
 import { setEditorContents } from './texteditor';
 import showMessage from './message-panel';
 import { serializeMarkdownBlocks } from './markdown-blocks';
@@ -224,7 +224,6 @@ function removeBackupsForDocument(id) {
 }
 
 function migrateLegacyDocument() {
-    migrateRawLegacyStorage();
     const existingIndex = readIndex();
     if (existingIndex.length) {
         const storedCurrent = localStorageManager.getItem(CURRENT_KEY);
@@ -268,24 +267,6 @@ function migrateLegacyBackups(id) {
             const timestamp = key.split('-')[2];
             localStorageManager.setItem(getDocumentBackupPrefix(id) + timestamp, items[i].value);
             localStorageManager.removeItem(key);
-        }
-    }
-}
-
-function migrateRawLegacyStorage() {
-    if (localStorage.getItem(LEGACY_AUTOSAVE_KEY)) {
-        localStorageManager.setItem(LEGACY_AUTOSAVE_KEY, localStorage.getItem(LEGACY_AUTOSAVE_KEY));
-    }
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.indexOf('oTranscribe-backup') === 0) {
-            const item = {
-                value: localStorage.getItem(key),
-                timestamp: key.split('-')[2]
-            };
-            localStorage.setItem('localStorageManager_' + key, JSON.stringify(item));
-            localStorage.removeItem(key);
-            i -= 1;
         }
     }
 }

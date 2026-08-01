@@ -1,4 +1,5 @@
 const $ = require('jquery');
+import { localStorageManager } from './indexeddb-store';
 
 var languages = {
     'en': 'English',

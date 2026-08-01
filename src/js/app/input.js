@@ -1,4 +1,5 @@
 const $ = require('jquery');
+import { localStorageManager } from './indexeddb-store';
 
 export function inputSetup(opts) {
     
@@ -88,7 +89,7 @@ function loadPreviousFileDetails(){
 
 function saveFileDetails(fileDetails){
     var obj = fileDetails;
-    if (typeof file === 'string') {
+    if (typeof fileDetails === 'string') {
         obj = {
             name: fileDetails,
             source: ''

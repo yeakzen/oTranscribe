@@ -223,6 +223,12 @@
     background: #eee;
     top: 36px;
     width: 100%;
+
+    &.document-hidden {
+        #textbox {
+            display: none !important;
+        }
+    }
 }
 
 .textbox-container.media-audio {
@@ -286,6 +292,30 @@
         .media-panel {
             width: calc(100% - 760px);
             min-width: 240px;
+        }
+    }
+}
+
+.textbox-container.document-hidden.media-audio {
+    .media-panel {
+        right: calc(50% - 350px);
+        width: auto;
+        min-width: 0;
+    }
+}
+
+.textbox-container.document-hidden.media-video {
+    .media-panel {
+        right: 230px;
+        width: auto;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 1120px) {
+    .textbox-container.document-hidden.media-video {
+        .media-panel {
+            right: 205px;
         }
     }
 }

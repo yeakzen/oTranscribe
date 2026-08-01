@@ -19,7 +19,9 @@ $fafallbacks: (
     trash: '🗑',
     pencil: '✎',
     plus: '+',
-    files-o: '▣'
+    files-o: '▣',
+    eye: '◉',
+    eye-slash: '◎'
 );
 
 @each $class, $symbol in $fafallbacks {

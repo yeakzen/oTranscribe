@@ -1,5 +1,5 @@
 const $ = require('jquery');
-const localStorageManager = require('local-storage-manager');
+import { localStorageManager } from './indexeddb-store';
 import showMessage from './message-panel';
 import {setEditorContents} from './texteditor';
 import { addKeyboardShortcut } from './ui';
@@ -16,10 +16,6 @@ function getTexteditorContents() {
 }
 
 function init(){
-    localStorageManager.onFull = function(){
-        var backupClearMessage = document.webL10n.get('backup-clear');
-        showMessage( backupClearMessage );
-    }
     localStorageManager.onSaveFailure = warnAboutBackupFailure;
     autosaveInit();
     setInterval(function(){
@@ -191,8 +187,8 @@ function listFiles(){
         ls = localStorageManager.getArray();
     } catch (e) {
         console.error(e);
-        console.error('Problem listing files from localStorage.');
-        showMessage('Error listing files from localStorage. Manually clearing localStorage data may fix this. <a href="./help#why_is_otranscribe_is_no_longer_saving_backups">Instructions here</a>.');
+        console.error('Problem listing files from browser storage.');
+        showMessage('Error listing files from browser storage. Manually clearing browser storage data may fix this. <a href="./help#why_is_otranscribe_is_no_longer_saving_backups">Instructions here</a>.');
         throw(e);
     }
     for (var i = 0; i < ls.length; i++) {
@@ -206,7 +202,7 @@ function listFiles(){
 
 
 function saveBackup(){
-    // save current text to timestamped localStorageManager item
+    // save current text to timestamped storage item
     var text = getTexteditorContents();
     saveCurrentDocument(text);
     var timestamp = new Date().getTime();

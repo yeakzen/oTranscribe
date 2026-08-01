@@ -5,7 +5,7 @@
 const $ = require('jquery');
 let otrQueryParams = {};
 
-import { watchFormatting, watchWordCount, initAutoscroll } from './texteditor';
+import { watchFormatting, watchWordCount, initAutoscroll, initDocumentVisibilityToggle } from './texteditor';
 import { inputSetup, getQueryParams, hide as inputHide } from './input';
 import oldBrowserCheck from './old-browsers';
 import languageSetup from './languages';
@@ -19,77 +19,82 @@ import importSetup from './import';
 import viewController from './view-controller';
 import { clearSubtitles, setupSubtitleControls } from './subtitles';
 import { setupMarkdownBlocks } from './markdown-blocks';
+import { initIndexedDBStore, localStorageManager } from './indexeddb-store';
 
 export default function init(){
-    initDocuments({
-        beforeSwitch: () => saveCurrentDocument()
-    });
-    initBackup();
-    watchFormatting();
-    languageSetup();
-    activateTimestamps();
-    exportSetup();
-    importSetup();
-    setupSubtitleControls();
-    setupMarkdownBlocks();
-    initAutoscroll();
+    initIndexedDBStore().then(() => {
+        initDocuments({
+            beforeSwitch: () => saveCurrentDocument()
+        });
+        initBackup();
+        watchFormatting();
+        languageSetup();
+        activateTimestamps();
+        exportSetup();
+        importSetup();
+        setupSubtitleControls();
+        setupMarkdownBlocks();
+        initAutoscroll();
+        initDocumentVisibilityToggle();
 
-    // this is necessary due to execCommand restrictions
-    // see: http://stackoverflow.com/a/33321235
-    window.insertTimestamp = insertTimestamp;
-    window.insertTimestampPreviousSecond = insertTimestampPreviousSecond;
-    window.highlightTimestamps = highlightTimestamps;
-    window.clearHighlightedTimestamps = clearHighlightedTimestamps;
+        // this is necessary due to execCommand restrictions
+        // see: http://stackoverflow.com/a/33321235
+        window.insertTimestamp = insertTimestamp;
+        window.insertTimestampPreviousSecond = insertTimestampPreviousSecond;
+        window.highlightTimestamps = highlightTimestamps;
+        window.clearHighlightedTimestamps = clearHighlightedTimestamps;
     
-    keyboardShortcutSetup();
+        keyboardShortcutSetup();
 
-    viewController.set('about');
+        viewController.set('about');
 
-    // Gather query parameters into an object
-    otrQueryParams = getQueryParams();
+        // Gather query parameters into an object
+        otrQueryParams = getQueryParams();
 
-    // If the ?v=<VIDEO_ID> parameter is found in the URL, auto load YouTube video
-    if ( otrQueryParams['v'] ){
-        $('.start').removeClass('ready');
-        setMediaLayout('video');
-        createPlayer({
-            driver: playerDrivers.YOUTUBE,
-            source: "https://www.youtube.com/watch?v=" + otrQueryParams.v
-        }).then((player) => {
-            inputHide();
-            viewController.set('editor');
-            bindPlayerToUI();
-            let timestamp = otrQueryParams['t']; 
-            if ( timestamp ){
-                // Is the timestamp in HH:MM::SS format?
-                if ( ~timestamp.indexOf(":") ){
-                    timestamp = convertTimestampToSeconds(timestamp);
-                } 
-                player.driver._ytEl.seekTo(timestamp);
+        // If the ?v=<VIDEO_ID> parameter is found in the URL, auto load YouTube video
+        if ( otrQueryParams['v'] ){
+            $('.start').removeClass('ready');
+            setMediaLayout('video');
+            createPlayer({
+                driver: playerDrivers.YOUTUBE,
+                source: "https://www.youtube.com/watch?v=" + otrQueryParams.v
+            }).then((player) => {
+                inputHide();
+                viewController.set('editor');
+                bindPlayerToUI();
+                let timestamp = otrQueryParams['t']; 
+                if ( timestamp ){
+                    // Is the timestamp in HH:MM::SS format?
+                    if ( ~timestamp.indexOf(":") ){
+                        timestamp = convertTimestampToSeconds(timestamp);
+                    } 
+                    player.driver._ytEl.seekTo(timestamp);
+                }
+            });
+
+        } else {
+
+            if ( localStorageManager.getItem("oT-lastfile") ) {
+                viewController.set('editor');
+            }
+        
+        }
+
+        $('.title').mousedown(() => {
+            if (viewController.is('about')) {
+                viewController.set('editor');
+            } else {
+                viewController.set('about');
+            }
+        });
+        $('.settings-button').mousedown(() => {
+            if (viewController.is('settings')) {
+                viewController.set('editor');
+            } else {
+                viewController.set('settings');
             }
         });
 
-    } else {
-
-        if ( localStorageManager.getItem("oT-lastfile") ) {
-            viewController.set('editor');
-        }
-        
-    }
-
-    $('.title').mousedown(() => {
-        if (viewController.is('about')) {
-            viewController.set('editor');
-        } else {
-            viewController.set('about');
-        }
-    });
-    $('.settings-button').mousedown(() => {
-        if (viewController.is('settings')) {
-            viewController.set('editor');
-        } else {
-            viewController.set('settings');
-        }
     });
 
 }
@@ -102,6 +107,10 @@ function setMediaLayout(type) {
 
 // note: this function may run multiple times
 function onLocalized() {
+    initIndexedDBStore().then(setupLocalizedUI);
+}
+
+function setupLocalizedUI() {
     const resetInput = inputSetup({
         create: file => {
             clearSubtitles();

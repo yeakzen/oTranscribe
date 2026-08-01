@@ -1,4 +1,4 @@
-const localStorageManager = require('local-storage-manager');
+import { localStorageManager } from '../indexeddb-store';
 import defaultSettings from './defaults.json';
 
 function getSettings() {

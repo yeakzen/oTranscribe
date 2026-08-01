@@ -3,6 +3,8 @@ import { activateTimestamps } from './timestamps';
 import { getTextWithMarkdownBlocks, hydrateMarkdownBlocks } from './markdown-blocks';
 const $ = require('jquery');
 
+const DOCUMENT_HIDDEN_CLASS = 'document-hidden';
+
 function countWords(str){
     var trimmedStr = $.trim(str);
     if (trimmedStr){
@@ -106,9 +108,65 @@ function initAutoscroll() {
   });
 }
 
+function syncDocumentVisibilityButton(isHidden) {
+    const button = document.querySelector('.sbutton.document-visibility');
+    if (!button) {
+        return;
+    }
+
+    const icon = button.querySelector('i');
+    const label = button.querySelector('.label');
+    const actionLabel = isHidden ? 'Show document' : 'Hide document';
+
+    button.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+    button.setAttribute('aria-label', actionLabel);
+    button.setAttribute('title', actionLabel);
+
+    if (icon) {
+        icon.className = isHidden ? 'fa fa-eye-slash active' : 'fa fa-eye';
+    }
+    if (label) {
+        label.textContent = isHidden ? 'show doc' : 'hide doc';
+    }
+}
+
+function setDocumentVisible(isVisible) {
+    const container = document.querySelector('.textbox-container');
+    if (!container) {
+        return;
+    }
+
+    container.classList.toggle(DOCUMENT_HIDDEN_CLASS, !isVisible);
+    syncDocumentVisibilityButton(!isVisible);
+}
+
+function toggleDocumentVisibility() {
+    const container = document.querySelector('.textbox-container');
+    if (!container) {
+        return;
+    }
+
+    setDocumentVisible(container.classList.contains(DOCUMENT_HIDDEN_CLASS));
+}
+
+function initDocumentVisibilityToggle() {
+    const button = document.querySelector('.sbutton.document-visibility');
+    setDocumentVisible(true);
+
+    if (!button) {
+        return;
+    }
+
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        toggleDocumentVisibility();
+    });
+}
+
 export {
     initWatchFormatting as watchFormatting,
     initWordCount as watchWordCount,
     setEditorContents as setEditorContents,
-    initAutoscroll as initAutoscroll
+    initAutoscroll as initAutoscroll,
+    initDocumentVisibilityToggle as initDocumentVisibilityToggle
 };
